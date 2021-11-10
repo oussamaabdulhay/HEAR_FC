@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "HEAR_ROS/include/**",
+                "HEAR/include",
+                "FC_util/include/**",
+                "/opt/ros/melodic/include/**",
+                "~/FC_ws/devel/include/**"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c11",
+            "intelliSenseMode": "clang-x64"
+        }
+    ],
+    "version": 4
+  }
+  

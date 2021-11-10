@@ -1,0 +1,9 @@
+<library path="libopti_nodelet">
+    <class name="flight_controller/OptiNodelet"
+           type="HEAR::OptiNodelet"
+           base_class_type="nodelet::Nodelet">
+        <description>
+        Nodelet for OptiTrack.
+        </description>
+    </class>
+</library>

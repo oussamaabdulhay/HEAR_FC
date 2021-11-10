@@ -1,0 +1,15 @@
+<launch> 
+  <!-- <include file="$(find mocap_optitrack)/launch/mocap.launch"/>
+  <include file="$(find xsens_mti_driver)/launch/xsens_mti_node.launch"/> -->
+  <node pkg="flight_controller" type="trajectory_node" name="trajectory_node" required="true" output="screen"/>
+
+  <node pkg="nodelet" type="nodelet" name="nodelet_manager"  args="manager" output="screen">
+  <param name="num_worker_threads" value="4"/>
+  </node>
+
+  <node pkg="nodelet" type="nodelet" name="Outer_Sys" args="load flight_controller/OuterSysNodelet nodelet_manager" output="screen" required="true"/>
+  <node pkg="nodelet" type="nodelet" name="Inner_Sys" args="load flight_controller/InnerSysNodelet nodelet_manager" output="screen"/>
+  <node pkg="nodelet" type="nodelet" name="Actuation_Sys" args="load flight_controller/ActuationSysNodelet nodelet_manager" output="screen"/>
+  <node pkg="nodelet" type="nodelet" name="Providers" args="load flight_controller/OptiNodelet nodelet_manager" output="screen"/>
+
+</launch> 

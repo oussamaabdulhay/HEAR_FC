@@ -1,0 +1,9 @@
+<library path="libouter_sys_nodelet">
+    <class name="flight_controller/OuterSysNodelet"
+           type="HEAR::OuterSysNodelet"
+           base_class_type="nodelet::Nodelet">
+        <description>
+        Nodelet for Outer loop control system of UAV.
+        </description>
+    </class>
+</library>

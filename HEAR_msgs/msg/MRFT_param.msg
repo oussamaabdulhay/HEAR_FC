@@ -1,0 +1,6 @@
+int32 id
+float32 mrft_beta
+float32 mrft_relay_amp
+float32 mrft_bias
+int32 mrft_conf_samples
+int32 mrft_no_switch_delay

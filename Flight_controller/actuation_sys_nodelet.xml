@@ -1,0 +1,9 @@
+<library path="libactuation_sys_nodelet">
+    <class name="flight_controller/ActuationSysNodelet"
+           type="HEAR::ActuationSysNodelet"
+           base_class_type="nodelet::Nodelet">
+        <description>
+        Nodelet for Actuation loop system of UAV.
+        </description>
+    </class>
+</library>

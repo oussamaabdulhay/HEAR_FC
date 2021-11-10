@@ -1,0 +1,9 @@
+<library path="libinner_sys_nodelet">
+    <class name="flight_controller/InnerSysNodelet"
+           type="HEAR::InnerSysNodelet"
+           base_class_type="nodelet::Nodelet">
+        <description>
+        Nodelet for Inner loop control system of UAV.
+        </description>
+    </class>
+</library>
