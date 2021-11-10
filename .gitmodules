@@ -1,0 +1,3 @@
+[submodule "Flight_controller/HEAR2"]
+	path = Flight_controller/HEAR2
+	url = https://github.com/AhmedHumais/HEAR2.git

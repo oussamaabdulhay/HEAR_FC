@@ -28,7 +28,7 @@ catkin_package(
     nodelet
 )
 
-add_subdirectory(HEAR HEAR/build)
+add_subdirectory(HEAR2 HEAR2/build)
 
 include_directories(
     HEAR_nodelet
