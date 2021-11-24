@@ -81,6 +81,10 @@ namespace HEAR
         auto pos_sw = outer_sys->createBlock(BLOCK_ID::INVERTED_SWITCH3, "Pos_sw");
         auto vel_sw = outer_sys->createBlock(BLOCK_ID::INVERTED_SWITCH3, "Vel_sw");
         auto ori_sw = outer_sys->createBlock(BLOCK_ID::INVERTED_SWITCH3, "Ori_sw");
+
+        //////// pos_control switches //////////
+        auto en_xpos_sw = outer_sys->createBlock(BLOCK_ID::INVERTED_SWITCH, "En_Xpos_Sw");
+        auto en_ypos_sw = outer_sys->createBlock(BLOCK_ID::INVERTED_SWITCH, "En_Ypos_Sw");
                 
         ////////////// connecting blocks /////////
 
@@ -118,7 +122,8 @@ namespace HEAR
         // outer_sys->connect(grav_scale->getOutputPort<float>(Gain::OP::OUTPUT), acc_ref_gain_y->getInputPort<float>(Multiply::IP::INPUT_0));
         
         // connecting x control sys blocks
-        outer_sys->connect(pos_h_demux->getOutputPort<float>(Demux3::OP::X), pid_x->getInputPort<float>(PID_Block::IP::ERROR));
+        outer_sys->connect(pos_h_demux->getOutputPort<float>(Demux3::OP::X), en_xpos_sw->getInputPort<float>(InvertedSwitch::IP::NC));
+        outer_sys->connect(en_xpos_sw->getOutputPort<float>(InvertedSwitch::OP::COM), pid_x->getInputPort<float>(PID_Block::IP::ERROR));
         outer_sys->connect(vel_h_demux->getOutputPort<float>(Demux3::OP::X), pid_x->getInputPort<float>(PID_Block::IP::PV_DOT));
         outer_sys->connect(acc_h_demux->getOutputPort<float>(Demux3::OP::X), sum_acc_x->getInputPort<float>(Sum::OPERAND1));
         outer_sys->connect(pid_x->getOutputPort<float>(PID_Block::OP::COMMAND), sum_acc_x->getInputPort<float>(Sum::OPERAND2));
@@ -135,7 +140,8 @@ namespace HEAR
         outer_sys->connect(sum_cmd_bias_x->getOutputPort<float>(Sum::OP::OUTPUT), mux_fh_des->getInputPort<float>(Mux3::IP::X));
 
         // connecting y control sys blocks
-        outer_sys->connect(pos_h_demux->getOutputPort<float>(Demux3::OP::Y), pid_y->getInputPort<float>(PID_Block::IP::ERROR));
+        outer_sys->connect(pos_h_demux->getOutputPort<float>(Demux3::OP::Y), en_ypos_sw->getInputPort<float>(InvertedSwitch::IP::NC));
+        outer_sys->connect(en_ypos_sw->getOutputPort<float>(InvertedSwitch::OP::COM), pid_y->getInputPort<float>(PID_Block::IP::ERROR));
         outer_sys->connect(vel_h_demux->getOutputPort<float>(Demux3::OP::Y), pid_y->getInputPort<float>(PID_Block::IP::PV_DOT));
         outer_sys->connect(acc_h_demux->getOutputPort<float>(Demux3::OP::Y),  sum_acc_y->getInputPort<float>(Sum::OPERAND1));
         outer_sys->connect(pid_y->getOutputPort<float>(PID_Block::OP::COMMAND), sum_acc_y->getInputPort<float>(Sum::OPERAND2));
@@ -258,6 +264,11 @@ namespace HEAR
         outer_sys->connectExternalTrigger(bias_corr_trig, hold_y_bias);
         outer_sys->connectExternalTrigger(bias_corr_trig, sw_bias_x);
         outer_sys->connectExternalTrigger(bias_corr_trig, sw_bias_y);
+
+        // adding pos enable trigger
+        auto pos_en_trig = outer_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/disable_xy_pos_control");
+        outer_sys->connectExternalTrigger(pos_en_trig, en_xpos_sw);
+        outer_sys->connectExternalTrigger(pos_en_trig, en_ypos_sw);
 
         /////////////// initializing and starting the outer loop system  /////////////////
         outer_sys->start();
