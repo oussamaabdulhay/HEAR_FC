@@ -1,8 +1,11 @@
+// adding RL interface
+
 #include <ros/ros.h>
 #include <std_srvs/SetBool.h>
 #include <hear_msgs/set_float.h>
 #include <hear_msgs/set_bool.h>
 #include <std_msgs/Float32.h>
+#include <std_msgs/Bool.h>
 #include <geometry_msgs/Point.h>
 #include <std_srvs/Empty.h>
 #include <tf2/LinearMath/Matrix3x3.h>
@@ -31,6 +34,12 @@ bool send_curr_pos_opti = false;
 bool send_curr_pos_slam = false;
 bool on_opti = true;
 
+/// RL code
+bool rl_running = false;
+bool pos_control = true;
+geometry_msgs::Point rl_vel_msg;
+///
+
 float take_off_height = 1.0;
 float land_height = -0.1;
 geometry_msgs::Point current_pos_opti;
@@ -49,6 +58,16 @@ bool read_file(std::string fileName, std::vector<float>& vec){
     }
     return false;
 }
+
+//// RL code
+void rl_state_Cb(const std_msgs::Bool::ConstPtr& msg){
+    rl_running = msg->data;
+}
+
+void rl_vel_Cb(const geometry_msgs::Point::ConstPtr& msg){
+    rl_vel_msg = *msg;
+}
+////
 
 void opti_pos_Cb(const geometry_msgs::Point::ConstPtr& msg){
     current_pos_opti = *msg;
@@ -119,6 +138,12 @@ int main(int argc, char **argv){
     ros::Subscriber pos_opti_sub = nh.subscribe<geometry_msgs::Point>("/opti/pos", 10, &opti_pos_Cb);
     ros::Subscriber pos_slam_sub = nh.subscribe<geometry_msgs::Point>("/slam/pos", 10, &slam_pos_Cb);
     ros::Subscriber yaw_sub = nh.subscribe<geometry_msgs::Point>("/providers/yaw", 10, &yaw_Cb);
+
+    //RL code
+    ros::Subscriber rl_state_sub = nh.subscribe<std_msgs::Bool>("/rl/is_running", 10, &rl_state_Cb);
+    ros::Subscriber rl_vel_sub = nh.subscribe<geometry_msgs::Point>("/rl/vel_cmd", 10, &rl_vel_Cb);
+    ros::ServiceClient pos_en_clnt = nh.serviceClient<std_srvs::SetBool>("/disable_xy_pos_control");
+    //
 
     ros::Publisher pub_waypoint_pos = nh.advertise<geometry_msgs::Point>("/waypoint_reference/pos", 10);
     ros::Publisher pub_waypoint_yaw = nh.advertise<std_msgs::Float32>("/waypoint_reference/yaw", 10);
@@ -295,6 +320,24 @@ if(!(read_file(file_path_acc_x, wp_acc_x))){
                 pub_waypoint_vel.publish(wp_vel_msg);
                 pub_waypoint_acc.publish(wp_acc_msg);            
                 i++;
+            }
+        }
+        else if(rl_running){
+            if(pos_control == true){
+                pos_control = false;
+                std_srvs::SetBool disable_pos_srv;
+                disable_pos_srv.request.data = true;
+                pos_en_clnt.call(disable_pos_srv);
+            }
+            pub_waypoint_vel.publish(rl_vel_msg);
+        }else{
+            if(pos_control == false){
+                std_srvs::SetBool disable_pos_srv;
+                disable_pos_srv.request.data = false;
+                pos_en_clnt.call(disable_pos_srv);
+                pos_control = true;
+                wp_vel_msg.x = 0; wp_vel_msg.y = 0; wp_vel_msg.z = 0;
+                pub_waypoint_vel.publish(wp_vel_msg);
             }
         }
         rt.sleep();
