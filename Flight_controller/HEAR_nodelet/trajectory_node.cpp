@@ -1,7 +1,6 @@
 // adding RL interface
 
 #include <ros/ros.h>
-#include <std_srvs/SetBool.h>
 #include <hear_msgs/set_float.h>
 #include <hear_msgs/set_bool.h>
 #include <std_msgs/Float32.h>
@@ -142,7 +141,7 @@ int main(int argc, char **argv){
     //RL code
     ros::Subscriber rl_state_sub = nh.subscribe<std_msgs::Bool>("/rl/is_running", 10, &rl_state_Cb);
     ros::Subscriber rl_vel_sub = nh.subscribe<geometry_msgs::Point>("/rl/vel_cmd", 10, &rl_vel_Cb);
-    ros::ServiceClient pos_en_clnt = nh.serviceClient<std_srvs::SetBool>("/disable_xy_pos_control");
+    ros::ServiceClient pos_en_clnt = nh.serviceClient<hear_msgs::set_bool>("/disable_xy_pos_control");
     //
 
     ros::Publisher pub_waypoint_pos = nh.advertise<geometry_msgs::Point>("/waypoint_reference/pos", 10);
@@ -325,14 +324,14 @@ if(!(read_file(file_path_acc_x, wp_acc_x))){
         else if(rl_running){
             if(pos_control == true){
                 pos_control = false;
-                std_srvs::SetBool disable_pos_srv;
+                hear_msgs::set_bool disable_pos_srv;
                 disable_pos_srv.request.data = true;
                 pos_en_clnt.call(disable_pos_srv);
             }
             pub_waypoint_vel.publish(rl_vel_msg);
         }else{
             if(pos_control == false){
-                std_srvs::SetBool disable_pos_srv;
+                hear_msgs::set_bool disable_pos_srv;
                 disable_pos_srv.request.data = false;
                 pos_en_clnt.call(disable_pos_srv);
                 pos_control = true;
