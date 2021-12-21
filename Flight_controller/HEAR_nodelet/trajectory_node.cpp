@@ -336,6 +336,8 @@ if(!(read_file(file_path_acc_x, wp_acc_x))){
                 pos_en_clnt.call(disable_pos_srv);
                 pos_control = true;
                 wp_vel_msg.x = 0; wp_vel_msg.y = 0; wp_vel_msg.z = 0;
+                wp_pos_msg.x = current_pos_opti.x; wp_pos_msg.y = current_pos_opti.y; wp_pos_msg.z = current_pos_opti.z;
+                pub_waypoint_pos.publish(wp_pos_msg);
                 pub_waypoint_vel.publish(wp_vel_msg);
             }
         }
