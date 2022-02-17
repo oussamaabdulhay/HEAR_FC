@@ -1,20 +1,20 @@
-#include "HexaActuationSystem.hpp"
+#include "QuadActuationSystem.hpp"
 
 namespace HEAR{
 
 
-HexaActuationSystem::HexaActuationSystem(int b_uid) : ActuationSystem(BLOCK_ID::HEXAACTUATIONSYSTEM, b_uid){
+QuadActuationSystem::QuadActuationSystem(int b_uid) : ActuationSystem(BLOCK_ID::QUADACTUATIONSYSTEM, b_uid){
 }
 
-void HexaActuationSystem::command(){
+void QuadActuationSystem::command(){
 
-    //TODO split into more methods
-    for(int i = 0; i < 6; i++){
+
+    for(int i = 0; i < NUM_MOTORS; i++){
         _commands[i] = 0.0;
     }
 
     //Update pulse values
-    for(int i = 0; i < 6; i++){
+    for(int i = 0; i < NUM_MOTORS; i++){
         for(int j = 0; j < 4; j++){
             _commands[i] += _geometry[i][j] * _u[j];
         }
@@ -23,7 +23,7 @@ void HexaActuationSystem::command(){
     //_u (PID outputs) should be between 0 and 1. Thus, we have to adjust for the range _escMin_armed to _escMax on _commands.
     //Normalize and Constrain
 
-    for(int i = 0; i < 6; i++){
+    for(int i = 0; i < NUM_MOTORS; i++){
         _commands[i] = (_commands[i] * (_escMax-_escMin_armed)) + _escMin_armed;
     }
 
@@ -42,12 +42,12 @@ void HexaActuationSystem::command(){
     if(min_command < _escMin_armed){
         bias = _escMin_armed - min_command;
         
-        for(int i = 0; i < 6; i++){
+        for(int i = 0; i < NUM_MOTORS; i++){
             _commands[i] = _commands[i] + bias;
         }
     }
 
-    for(int i = 0; i < 6; i++){
+    for(int i = 0; i < NUM_MOTORS; i++){
         if(_armed){
             if(_take_off){
                 _commands[i] = this->constrain(_commands[i], _escMin_armed, _escMax);
@@ -61,12 +61,11 @@ void HexaActuationSystem::command(){
     }
 
     //Actuate
-    for(int i = 0; i < 6; i++){
+    for(int i = 0; i < NUM_MOTORS; i++){
         _actuators[i]->applyCommand(_commands[i]);
     }
 
     cmd_out_port->write(_commands);
 }
-
 
 }

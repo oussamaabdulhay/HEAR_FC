@@ -15,14 +15,14 @@ namespace HEAR
         actuation_sys = new RosSystem(nh, pnh, FREQUENCY, "ActuationLoop");
 
         // creating Blocks
-        auto hexa = new HexaActuationSystem(0);
-        actuation_sys->addBlock(hexa, "Hexa");
-        ((HexaActuationSystem*)hexa)->init(FREQUENCY);
-        ((HexaActuationSystem*)hexa)->setHbTol(250);
+        auto Quad = new QuadActuationSystem(0);
+        actuation_sys->addBlock(Quad, "Quad");
+        Quad->init(FREQUENCY);
+        Quad->setHbTol(250);
         #ifdef BIG_HEXA
-        ((HexaActuationSystem*)hexa)->setESCValues(1165 ,1000, 2000);
+        Quad->setESCValues(1165 ,1000, 2000);
         #else
-        ((HexaActuationSystem*)hexa)->setESCValues(1140 ,1000, 2000);
+        Quad->setESCValues(1140 ,1000, 2000);
         #endif
 
         // thrust to command calculation
@@ -42,16 +42,16 @@ namespace HEAR
         actuation_sys->connect(act_gain->getOutputPort<float>(Constant<float>::OP::OUTPUT), adj_switch->getInputPort<float>(InvertedSwitch::IP::NC));
         actuation_sys->connect(mul_adj_gain->getOutputPort<float>(Multiply::OP::OUTPUT), adj_switch->getInputPort<float>(InvertedSwitch::IP::NO));
         actuation_sys->connect(adj_switch->getOutputPort<float>(InvertedSwitch::OP::COM), mul_act_gain->getInputPort<float>(Multiply::IP::INPUT_1));
-        actuation_sys->connect(mul_act_gain->getOutputPort<float>(Multiply::OP::OUTPUT), hexa->getInputPort<float>(HexaActuationSystem::IP::THRUST_CMD));
+        actuation_sys->connect(mul_act_gain->getOutputPort<float>(Multiply::OP::OUTPUT), Quad->getInputPort<float>(ActuationSystem::IP::THRUST_CMD));
 
-        actuation_sys->createSub(TYPE::Float3, "/angle_u", hexa->getInputPort<Vector3D<float>>(HexaActuationSystem::IP::BODY_RATE_CMD));
+        actuation_sys->createSub(TYPE::Float3, "/angle_u", Quad->getInputPort<Vector3D<float>>(ActuationSystem::IP::BODY_RATE_CMD));
         
-        actuation_sys->createPub(TYPE::FloatVec, "/actuation_cmd", hexa->getOutputPort<std::vector<float>>(HexaActuationSystem::OP::MOTOR_CMD));
+        actuation_sys->createPub(TYPE::FloatVec, "/actuation_cmd", Quad->getOutputPort<std::vector<float>>(ActuationSystem::OP::MOTOR_CMD));
 
         actuation_sys->createPub("/thrust_act", mul_act_gain->getOutputPort<float>(Multiply::OP::OUTPUT));
 
-        actuation_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/arm", hexa);
-        _hb_sub = nh.subscribe("/heartbeat", 10, &HexaActuationSystem::heartbeatCb, (HexaActuationSystem*)hexa);
+        actuation_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/arm", Quad);
+        _hb_sub = nh.subscribe("/heartbeat", 10, &ActuationSystem::heartbeatCb, (ActuationSystem*)Quad);
         
         actuation_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/record_hover_thrust", hold_thrust_val);
         actuation_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/use_adjusted_act_gain", adj_switch);

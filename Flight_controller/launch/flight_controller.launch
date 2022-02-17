@@ -1,6 +1,6 @@
 <launch> 
-  <include file="$(find mocap_optitrack)/launch/mocap.launch"/>
-  <include file="$(find xsens_mti_driver)/launch/xsens_mti_node.launch"/>
+  <!-- <include file="$(find mocap_optitrack)/launch/mocap.launch"/>
+  <include file="$(find xsens_mti_driver)/launch/xsens_mti_node.launch"/> -->
   <node pkg="flight_controller" type="trajectory_node" name="trajectory_node" required="true" output="screen"/>
 
   <node pkg="nodelet" type="nodelet" name="nodelet_manager"  args="manager" output="screen">

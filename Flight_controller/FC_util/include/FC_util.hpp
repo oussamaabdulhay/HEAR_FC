@@ -7,6 +7,7 @@
 #include "FromHorizon.hpp"
 #include "ToHorizon.hpp"
 #include "HexaActuationSystem.hpp"
+#include "QuadActuationSystem.hpp"
 #include "Rot2Quat.hpp"
 
 #endif
