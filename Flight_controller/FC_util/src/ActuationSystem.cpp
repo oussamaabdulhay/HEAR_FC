@@ -85,15 +85,15 @@ void ActuationSystem::setESCValues(int t_armed, int t_min, int t_max) {
 }
 
 int ActuationSystem::constrain(float value, int min_value, int max_value) {
-    
-    if ((int)value > max_value) {
-        value = max_value;
+    int val = static_cast<int>(value);
+    if (val > max_value) {
+        val = max_value;
     }
     // bug cathed in the original code
-    else if ((int)value < min_value) {
-        value = min_value;
+    else if (val < min_value) {
+        val = min_value;
     }
-    return int(value);
+    return val;
 }
 
 }

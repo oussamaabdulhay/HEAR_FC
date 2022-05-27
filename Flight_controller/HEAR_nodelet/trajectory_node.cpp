@@ -14,7 +14,7 @@
 
 const std::string dir_name = "/home/pi/Waypoints/";
 
-const float TAKE_OFF_VELOCITY = 0.5; //in m/s
+const float TAKE_OFF_VELOCITY = 0.75; //in m/s
 const float LAND_VELOCITY = 0.75; // in m/s
 const std::string file_path_x = dir_name + "waypoints_x.csv";
 const std::string file_path_y = dir_name + "waypoints_y.csv";
@@ -233,7 +233,7 @@ if(!(read_file(file_path_acc_x, wp_acc_x))){
                 take_off_started = true;
                 wp_pos_msg.x = current_pos_opti.x;
                 wp_pos_msg.y = current_pos_opti.y;
-                z_ref = current_pos_opti.z + 0.1;
+                z_ref = current_pos_opti.z + 0.2;
 
                 pub_waypoint_pos.publish(wp_pos_msg);
                 pub_waypoint_yaw.publish(current_yaw);

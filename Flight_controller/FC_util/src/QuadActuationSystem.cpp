@@ -30,7 +30,7 @@ void QuadActuationSystem::command(){
     //Get minimum command
     float min_command = _commands[0];
 
-    for(int i = 1; i < 6; i++){
+    for(int i = 1; i < NUM_MOTORS; i++){
         if(_commands[i] < min_command){
             min_command = _commands[i];
         }
@@ -41,7 +41,6 @@ void QuadActuationSystem::command(){
     //Anti saturation
     if(min_command < _escMin_armed){
         bias = _escMin_armed - min_command;
-        
         for(int i = 0; i < NUM_MOTORS; i++){
             _commands[i] = _commands[i] + bias;
         }
