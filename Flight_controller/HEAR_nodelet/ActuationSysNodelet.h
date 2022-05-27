@@ -17,7 +17,7 @@ public:
 private:
     const int FREQUENCY = 200;
     const float GRAV = 9.8;
-    const float HOV_THRUST = 0.12;
+    const float HOV_THRUST = 0.2;
 
     virtual void onInit();
     
