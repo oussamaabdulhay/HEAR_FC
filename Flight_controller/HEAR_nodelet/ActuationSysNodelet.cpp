@@ -20,7 +20,7 @@ namespace HEAR
         Quad->init(FREQUENCY);
         Quad->setHbTol(250);
         #ifdef BIG_HEXA
-        Quad->setESCValues(1150 ,1000, 2000);
+        Quad->setESCValues(1150 ,1000, 1800);
         #else
         Quad->setESCValues(1140 ,1000, 2000);
         #endif
