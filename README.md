@@ -1,6 +1,8 @@
 # HEAR_FC
 
-* clone the repository into ROS workspace \
+tested with ROS melodic \
+
+* clone the repository into ROS workspace source directory \
 ` git clone https://github.com/AhmedHumais/HEAR_FC.git `
 
 * change to code directory \
