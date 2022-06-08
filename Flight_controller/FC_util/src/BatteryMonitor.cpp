@@ -13,7 +13,7 @@ void BatteryMonitor::process(){
     float reading = adc->read(CHANNEL);
     // iter++;
     // iter %=max_chan;
-    bat_volt_port->write(reading*SCALE+OFFSET);
+    bat_volt_port->write((reading-OFFSET)*SCALE);
 }
 
 }

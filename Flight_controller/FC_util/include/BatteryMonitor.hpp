@@ -12,8 +12,8 @@ private:
     OutputPort<float>* bat_volt_port;
     std::unique_ptr <ADC> adc;
     const int CHANNEL = 2;
-    const float OFFSET = 0;
-    const float SCALE = 1;
+    const float OFFSET = 54;
+    const float SCALE = 0.01307;
     int iter = 0;
     int max_chan = 0;
 public:
