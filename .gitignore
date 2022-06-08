@@ -1,2 +1,3 @@
-Flight_controller/.vscode
-HEAR_msgs/.vscode
+Flight_controller/.vscode/*
+HEAR_msgs/.vscode/*
+.vscode

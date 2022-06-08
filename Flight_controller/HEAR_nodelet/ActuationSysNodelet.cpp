@@ -56,6 +56,11 @@ namespace HEAR
         actuation_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/record_hover_thrust", hold_thrust_val);
         actuation_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/use_adjusted_act_gain", adj_switch);
 
+        // adding battery monitor
+        auto bat_mon = new BatteryMonitor(0);
+        actuation_sys->addBlock(bat_mon, "Battery Monitor");
+        actuation_sys->createPub("/battery_voltage",bat_mon->getOutputPort<float>(BatteryMonitor::OP::BAT_VOLT));
+        //
 
         actuation_sys->start();
 

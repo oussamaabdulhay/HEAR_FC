@@ -4,8 +4,9 @@
             "name": "Linux",
             "includePath": [
                 "HEAR_ROS/include/**",
-                "HEAR/include",
+                "HEAR2/include",
                 "FC_util/include/**",
+                "HEAR_nodelet/",
                 "/opt/ros/melodic/include/**",
                 "~/FC_ws/devel/include/**"
             ],

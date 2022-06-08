@@ -9,5 +9,6 @@
 #include "HexaActuationSystem.hpp"
 #include "QuadActuationSystem.hpp"
 #include "Rot2Quat.hpp"
+#include "BatteryMonitor.hpp"
 
 #endif
