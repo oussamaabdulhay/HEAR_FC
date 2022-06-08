@@ -2,6 +2,9 @@
 #include "ActuationSysNodelet.h"
 #include <pluginlib/class_list_macros.h>
 
+#define HEXA
+//#define QUAD
+
 PLUGINLIB_EXPORT_CLASS(HEAR::ActuationSysNodelet, nodelet::Nodelet)
 
 namespace HEAR
@@ -15,14 +18,20 @@ namespace HEAR
         actuation_sys = new RosSystem(nh, pnh, FREQUENCY, "ActuationLoop");
 
         // creating Blocks
-        auto Quad = new QuadActuationSystem(0);
-        actuation_sys->addBlock(Quad, "Quad");
-        Quad->init(FREQUENCY);
-        Quad->setHbTol(250);
+    #ifdef QUAD
+        auto Uav = new QuadActuationSystem(0);
+        actuation_sys->addBlock(Uav, "Quad");
+    #else
+        auto Uav = new HexaActuationSystem(0);
+        actuation_sys->addBlock(Uav, "Hexa");
+    #endif
+
+        Uav->init(FREQUENCY);
+        Uav->setHbTol(250);
         #ifdef BIG_HEXA
-        Quad->setESCValues(1150 ,1000, 1800);
+        Uav->setESCValues(1150 ,1000, 1800);
         #else
-        Quad->setESCValues(1140 ,1000, 2000);
+        Uav->setESCValues(1140 ,1000, 2000);
         #endif
 
         // thrust to command calculation
@@ -42,16 +51,16 @@ namespace HEAR
         actuation_sys->connect(act_gain->getOutputPort<float>(Constant<float>::OP::OUTPUT), adj_switch->getInputPort<float>(InvertedSwitch::IP::NC));
         actuation_sys->connect(mul_adj_gain->getOutputPort<float>(Multiply::OP::OUTPUT), adj_switch->getInputPort<float>(InvertedSwitch::IP::NO));
         actuation_sys->connect(adj_switch->getOutputPort<float>(InvertedSwitch::OP::COM), mul_act_gain->getInputPort<float>(Multiply::IP::INPUT_1));
-        actuation_sys->connect(mul_act_gain->getOutputPort<float>(Multiply::OP::OUTPUT), Quad->getInputPort<float>(ActuationSystem::IP::THRUST_CMD));
+        actuation_sys->connect(mul_act_gain->getOutputPort<float>(Multiply::OP::OUTPUT), Uav->getInputPort<float>(ActuationSystem::IP::THRUST_CMD));
 
-        actuation_sys->createSub(TYPE::Float3, "/angle_u", Quad->getInputPort<Vector3D<float>>(ActuationSystem::IP::BODY_RATE_CMD));
+        actuation_sys->createSub(TYPE::Float3, "/angle_u", Uav->getInputPort<Vector3D<float>>(ActuationSystem::IP::BODY_RATE_CMD));
         
-        actuation_sys->createPub(TYPE::FloatVec, "/actuation_cmd", Quad->getOutputPort<std::vector<float>>(ActuationSystem::OP::MOTOR_CMD));
+        actuation_sys->createPub(TYPE::FloatVec, "/actuation_cmd", Uav->getOutputPort<std::vector<float>>(ActuationSystem::OP::MOTOR_CMD));
 
         actuation_sys->createPub("/thrust_act", mul_act_gain->getOutputPort<float>(Multiply::OP::OUTPUT));
 
-        actuation_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/arm", Quad);
-        _hb_sub = nh.subscribe("/heartbeat", 10, &ActuationSystem::heartbeatCb, (ActuationSystem*)Quad);
+        actuation_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/arm", Uav);
+        _hb_sub = nh.subscribe("/heartbeat", 10, &ActuationSystem::heartbeatCb, (ActuationSystem*)Uav);
         
         actuation_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/record_hover_thrust", hold_thrust_val);
         actuation_sys->createUpdateTrigger(UPDATE_MSG_TYPE::BOOL_MSG, "/use_adjusted_act_gain", adj_switch);

@@ -6,10 +6,13 @@ BatteryMonitor::BatteryMonitor(int b_uid) : Block(BLOCK_ID::BATTERYMONITOR, b_ui
     bat_volt_port = createOutputPort<float>(OP::BAT_VOLT, "BAT_VOLT");
     adc = std::unique_ptr <ADC>{ new ADC_Navio2() };
     adc->initialize();
+    max_chan = adc->get_channel_count();
 }
 
 void BatteryMonitor::process(){
-    float reading = adc->read(CHANNEL);
+    float reading = adc->read(iter%5);
+    iter++;
+    iter %=max_chan;
     bat_volt_port->write(reading*SCALE+OFFSET);
 }
 

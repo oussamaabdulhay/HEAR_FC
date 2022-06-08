@@ -14,6 +14,8 @@ private:
     const int CHANNEL = 2;
     const float OFFSET = 0;
     const float SCALE = 1;
+    int iter = 0;
+    int max_chan = 0;
 public:
     enum OP{BAT_VOLT};
     BatteryMonitor(int b_uid);
