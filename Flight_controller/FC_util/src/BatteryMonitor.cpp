@@ -10,7 +10,7 @@ BatteryMonitor::BatteryMonitor(int b_uid) : Block(BLOCK_ID::BATTERYMONITOR, b_ui
 }
 
 void BatteryMonitor::process(){
-    float reading = adc->read(iter%5);
+    float reading = adc->read(iter);
     iter++;
     iter %=max_chan;
     bat_volt_port->write(reading*SCALE+OFFSET);
