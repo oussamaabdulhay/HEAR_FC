@@ -55,11 +55,11 @@
 
 # How to Fly
 > ⚠️ Note:
--In order to work properly, all hardware connections should be checked carefully. 
--Check the motors connections and their rotation convention.
--Attach the proper propellers relative to the correct rotation convention of the motors.
--Check the battery level before flight.
--Check the lab safety requirements before conducting any flight tests.
+>-In order to work properly, all hardware connections should be checked carefully. 
+>-Check the motors connections and their rotation convention.
+>-Attach the proper propellers relative to the correct rotation convention of the motors.
+>-Check the battery level before flight.
+>-Check the lab safety requirements before conducting any flight tests.
 
 # _On Ground station_
 1. run `roscore`.
