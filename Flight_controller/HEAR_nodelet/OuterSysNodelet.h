@@ -25,6 +25,9 @@ private:
     ROSUnit_MRFTSwitchSrv* trig_srv_x;
     ROSUnit_MRFTSwitchSrv* trig_srv_z;
     ROSUnit_MRFTSwitchSrv* trig_srv_y;
+    ROSUnit_MRFTSwitchSrv* trig_srv_vs_x;
+    ROSUnit_MRFTSwitchSrv* trig_srv_vs_z;
+
 
 };
     

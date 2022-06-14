@@ -3,11 +3,10 @@
         {
             "name": "Linux",
             "includePath": [
-                "HEAR_ROS/include/**",
-                "HEAR/include",
-                "FC_util/include/**",
                 "/opt/ros/melodic/include/**",
-                "~/FC_ws/devel/include/**"
+                "FC_util/include/**",
+                "HEAR_ROS/include/**",
+                "HEAR2/include/**"
             ],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c11",
