@@ -16,7 +16,7 @@ namespace HEAR
 
         // creating Blocks
         auto filt_angle_rate = inner_sys->createBlock(BLOCK_ID::BW_FILT2, "Filt_angle_rate", TYPE::Float3);
-        ((BWFilter2<Vector3D<float>>*)filt_angle_rate)->setCoeff(BWFilt2_coeff::coeff_N200C60);
+        ((BWFilter2<Vector3D<float>>*)filt_angle_rate)->setCoeff(BWFilt2_coeff::coeff_N200C50);
         auto demux_angle_rate = inner_sys->createBlock(BLOCK_ID::DEMUX3, "Demux_AngleRate");
         auto demux_ori = inner_sys->createBlock(BLOCK_ID::DEMUX3, "Demux_Ori");
         auto mux_rpy = inner_sys->createBlock(BLOCK_ID::MUX3, "Mux_Ori");
