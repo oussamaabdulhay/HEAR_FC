@@ -253,12 +253,12 @@ if(!(read_file(file_path_acc_x, wp_acc_x))){
             trajectory_finished = true;
             if(!trajectory_started){
                 ROS_INFO("Trajectory Started");
-                trajectory_started = true;
-                if(on_opti){
-                    offset_pos = current_pos_opti;
-                }else {
-                    offset_pos = current_pos_slam;
-                }
+                // trajectory_started = true;
+                // if(on_opti){
+                //     offset_pos = current_pos_opti;
+                // }else {
+                //     offset_pos = current_pos_slam;
+                // }
 
             }            
             if(i < sz_x && en_wp_x){
